@@ -6,6 +6,21 @@ puts "Ruby 笔记"
 puts "Hello World!"
 puts "Hello DuGu Ruby!"
 
+puts "这是主 Ruby 程序"
+ 
+BEGIN {
+   puts "初始化 Ruby 程序"
+}
+
+puts "这是主 Ruby 程序"
+ 
+END {
+   puts "停止 Ruby 程序"
+}
+BEGIN {
+   puts "初始化 Ruby 程序"
+}
+
 # Ruby多行字符串
 
 print <<EOF

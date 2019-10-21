@@ -77,3 +77,36 @@ foo
     I said bar.
 bar
 ```
+
+**Ruby的BEGIN 语句**
+
+```ruby
+puts "这是主 Ruby 程序"
+ 
+BEGIN {
+   puts "初始化 Ruby 程序"
+}
+```
+
+**Ruby的BEGIN 语句**
+
+```ruby
+#!/usr/bin/ruby
+ 
+puts "这是主 Ruby 程序"
+ 
+END {
+   puts "停止 Ruby 程序"
+}
+BEGIN {
+   puts "初始化 Ruby 程序"
+}
+```
+
+**Ruby 注释**
+
+注释会对 Ruby 解释器隐藏一行，或者一行的一部分，或者若干行。可以在行首使用字符（ # ）：
+
+```ruby
+name = "Madisetti" # 这也是注释
+```

@@ -44,3 +44,23 @@ foo
     I said bar.
 bar
 
+=begin
+注释行1
+注释行2
+=end
+
+# Ruby 单行注释
+
+puts 'escape using "\\"';
+puts 'That\'s right';
+puts "相乘 : #{24*60*60}";
+
+ary = [ "fred", 10, 3.14, "This is a string", "last element", ]
+ary.each do |i|
+    puts i
+end
+
+hsh = colors = { "red" => 0xf00, "green" => 0x0f0, "blue" => 0x00f }
+hsh.each do |key, value|
+    print key, " is ", value, "\n"
+end

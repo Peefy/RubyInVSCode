@@ -24,12 +24,12 @@ BEGIN {
 # Ruby多行字符串
 
 print <<EOF
-    这是第一种方式创建here document 。
+    这是第一种方式创建here document。
     多行字符串。
 EOF
  
 print <<"EOF";                # 与上面相同
-    这是第二种方式创建here document 。
+    这是第二种方式创建here document。
     多行字符串。
 EOF
  
@@ -64,3 +64,24 @@ hsh = colors = { "red" => 0xf00, "green" => 0x0f0, "blue" => 0x00f }
 hsh.each do |key, value|
     print key, " is ", value, "\n"
 end
+
+class Customer
+    @@no_of_customers = 0
+    def initialize(id, name, addr)
+        @cust_id = id
+        @cust_name = name
+        @cust_addr = addr
+    end
+end
+
+cust1 = Customer. new("1", "John", "Wisdom Apartments, Ludhiya")
+cust2 = Customer. new("2", "Poul", "New Empire road, Khandala")
+
+class Sample
+    def hello
+        puts "Hello Ruby!"
+    end
+end
+
+obj = Sample. new
+obj.hello

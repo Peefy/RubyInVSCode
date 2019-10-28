@@ -275,4 +275,79 @@ end
 end
 ```
 
+**Ruby类和对象**
+
+Ruby是一种完美的面向对象的编程语言。面向对象编程语言的特性包括：
+
+* 数据封装
+* 数据抽象
+* 多态性
+* 继承
+
+在Ruby中，类总是以关键字class开始，后面跟类的名称。类名的首字母应该大写。类Customer如下所示：
+
+```ruby
+class Customer
+end
+```
+
+**Ruby类中的变量**
+
+* **局部变量**-局部变量是在方法中定义的变量。局部变量在方法外是不可用的。局部变量以小写字母或\_开始
+* **实例变量**-实例变量可以跨任何特性的实例或对象中的方法使用。这意味着，实例变量可以从对象到对象的改变。实例变量在变量名之前放置符号(@)
+* **类变量**-类变量可以跨不同的对象使用。类变量属于类，且类是一个属性。类变量在变量名之前放置符号(@@)
+* **全局变量**-类变量不能跨类使用，如果想要一个可以跨类使用的变量，需要定义全局变量。全局变量总是以美元符号($)开始
+
+```ruby
+class Customer
+    @@no_of_customers = 0
+end
+```
+
+**在Ruby中使用new方法创建对象**
+
+对象是类的实例。在Ruby中可以使用类的方法new创建对象，方法`new`是一种独特的方法，在Ruby库中预定义，`new`方法属于类方法。
+
+```ruby
+cust1 = Customer. new
+cust2 = Customer. new
+```
+
+上述代码中，cust1和cust2是两个对象的名称。对象名称后跟着等号(=),等号后面跟着类名，然后是点运算符和关键字`new`
+
+**自定义方法来创建Ruby**
+
+可以给方法`new`传递参数，这些参数可用于初始化类变量。当想要声明带参数的`new`方法时，需要在创建类的同时声明方法`initialize`。`initialize`方法是一种特殊类型的方法，将在参数调用带参数的类型的`new`方法时执行。
+
+```ruby
+class Customer
+    @@no_of_customers = 0
+    def initialize(id, name, addr)
+        @cust_id = id
+        @cust_name = name
+        @cust_addr = addr
+    end
+end
+```
+
+```ruby
+cust1 = Customer.new("1", "John", "Wisdom Apartments, Ludhiya")
+cust2 = Customer.new("2", "Poul", "New Empire road, Khandala")
+```
+
+**Ruby类中的成员函数**
+
+在Ruby中，函数被称为方法。类中的每个方法是以关键字`def`开始，后跟方法名。方法名总是以**小写字母**开头。在Ruby中，可以使用关键字`end`来结束一个方法
+
+```ruby
+class Sample
+    def hello
+        puts "Hello Ruby!"
+    end
+end
+
+obj = Sample. new
+obj.hello
+```
+
 

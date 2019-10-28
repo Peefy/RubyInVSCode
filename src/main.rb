@@ -72,10 +72,21 @@ class Customer
         @cust_name = name
         @cust_addr = addr
     end
+    def display_details()
+        puts "Customer id #@cust_id"
+        puts "Customer name #@cust_name"
+        puts "Customer address #@cust_addr"
+    end
+    def total_no_of_customers()
+        @@no_of_customers += 1
+        puts "Total number of customers: #@@no_of_customers"
+    end
 end
 
 cust1 = Customer. new("1", "John", "Wisdom Apartments, Ludhiya")
 cust2 = Customer. new("2", "Poul", "New Empire road, Khandala")
+
+cust1.total_no_of_customers
 
 class Sample
     def hello
@@ -85,3 +96,5 @@ end
 
 obj = Sample. new
 obj.hello
+
+

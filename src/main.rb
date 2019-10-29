@@ -97,4 +97,5 @@ end
 obj = Sample. new
 obj.hello
 
-
+a, b, c = 10, 20, 30
+puts a, b

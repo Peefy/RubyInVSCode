@@ -675,3 +675,257 @@ puts Inside_one::CONST.call + Inside_two::CONST
 -| `defined?`	|检查指定符号是否已定义
 -| `not`	|逻辑否定
 -| `or and`	|逻辑组成
+
+**Ruby注释**
+
+注释是在运行时会被忽略的Ruby代码内的注释，单行注释以#字符开始，直到该行结束
+
+```ruby
+#! /usr/bin/ruby
+
+# 这是一个单行注释
+
+puts "Hello, Ruby"
+```
+
+**Ruby多行注释**
+
+可以使用`=begin`和`=end`语法注释多行
+
+```ruby
+=begin
+这是一个多行注释
+但 =begin和 =end只能出现在第一行和最后一行
+=end
+```
+
+请确保尾部的注释离代码有足够的距离，以便容易区分注释和代码。如果尾部超过一条注释，请将它们对齐。例如：
+
+```ruby
+@counter      # 跟踪页面被点击的次数
+@siteCounter  # 跟踪所有页面被点击的次数
+```
+
+**Ruby判断**
+
+Ruby 提供了几种很常见的条件结构。在这里，我们将解释所有的条件语句和 Ruby 中可用的修饰符。
+
+```ruby
+if conditional [then]
+    code...
+[elsif conditional] [then]
+    code...]...
+[else
+    code...]
+end
+```
+
+if 表达式用于条件执行。值 false 和 nil 为假，其他值都为真。请注意，Ruby 使用 elsif，不是使用 else if 和 elif。
+
+如果 conditional 为真，则执行 code。如果 conditional 不为真，则执行 else 子句中指定的 code。
+
+通常我们省略保留字 then 。若想在一行内写出完整的 if 式，则必须以 then 隔开条件式和程式区块。如下所示:
+
+```ruby
+x = 1
+if x > 2
+   puts "x 大于 2"
+elsif x <= 2 and x!=0
+   puts "x 是 1"
+else
+   puts "无法得知 x 的值"
+end
+```
+
+**Ruby if 修饰符**
+
+```ruby
+$debug = 1
+print "debug\n" if $debug
+```
+
+**Ruby unless语句**
+
+unless式和 if式作用相反，即如果 conditional 为假，则执行 code。如果 conditional 为真，则执行 else 子句中指定的 code。
+
+```ruby
+x=1
+unless x>2
+    puts "x 小于 2"
+else
+    puts "x 大于 2"
+end
+```
+
+**Ruby unless修饰符**
+
+```ruby
+$var =  1
+print "1 -- 这一行输出\n" if $var
+print "2 -- 这一行不输出\n" unless $var
+ 
+$var = false
+print "3 -- 这一行输出\n" unless $var
+```
+
+**Ruby case 语句**
+
+```ruby
+$age =  5
+case $age
+when 0 .. 2
+    puts "婴儿"
+when 3 .. 6
+    puts "小孩"
+when 7 .. 12
+    puts "child"
+when 13 .. 18
+    puts "少年"
+else
+    puts "其他年龄段的"
+end
+```
+
+```ruby
+foo = false
+bar = true
+quu = false
+ 
+case
+when foo then puts 'foo is true'
+when bar then puts 'bar is true'
+when quu then puts 'quu is true'
+end
+# 显示 "bar is true"
+```
+
+**Ruby循环**
+
+**Ruby while语句**
+
+```ruby
+while conditional [do]
+   code
+end
+```
+
+```ruby
+$i = 0
+$num = 5
+ 
+while $i < $num  do
+   puts("在循环语句中 i = #$i" )
+   $i +=1
+end
+```
+
+当 conditional 为真时，执行 code。
+
+如果 while 修饰符跟在一个没有 rescue 或 ensure 子句的 begin 语句后面，code 会在 conditional 判断之前执行一次。
+
+```ruby
+#!/usr/bin/ruby
+# -*- coding: UTF-8 -*-
+ 
+$i = 0
+$num = 5
+begin
+   puts("在循环语句中 i = #$i" )
+   $i +=1
+end while $i < $num
+```
+
+当 conditional 为假时，执行 code。
+
+语法中 do 可以省略不写。但若要在一行内写出 until 式，则必须以 do 隔开条件式或程式区块。
+
+```ruby
+$i = 0
+$num = 5
+ 
+until $i > $num  do
+   puts("在循环语句中 i = #$i" )
+   $i +=1;
+end
+```
+
+**Ruby until语句**
+
+当 conditional 为 false 时，执行 code。
+
+如果 until 修饰符跟在一个没有 rescue 或 ensure 子句的 begin 语句后面，code 会在 conditional 判断之前执行一次。
+
+```ruby
+$i = 0
+$num = 5
+begin
+   puts("在循环语句中 i = #$i" )
+   $i +=1;
+end until $i > $num
+```
+
+**Ruby for语句**
+
+先计算表达式得到一个对象，然后针对 expression 中的每个元素分别执行一次 code。
+
+```ruby
+for i in 0..5
+   puts "局部变量的值为 #{i}"
+end
+```
+
+for...in 循环几乎是完全等价于：
+
+> (expression).each do |variable[, variable...]| code end
+
+但是，for 循环不会为局部变量创建一个新的作用域。
+
+语法中 do 可以省略不写。但若要在一行内写出 for 式，则必须以 do 隔开条件式或程式区块。
+
+```ruby
+(0..5).each do |i|
+   puts "局部变量的值为 #{i}"
+end
+```
+
+**Ruby break语句**
+
+```ruby
+for i in 0..5
+   if i > 2 then
+      break
+   end
+   puts "局部变量的值为 #{i}"
+end
+```
+
+**Ruby next语句**
+
+```ruby
+for i in 0..5
+   if i < 2 then
+      next
+   end
+   puts "局部变量的值为 #{i}"
+end
+```
+
+**Ruby redo语句**
+
+```ruby
+for i in 0..5
+   if i < 2 then
+      puts "局部变量的值为 #{i}"
+      redo
+   end
+end
+```
+
+**Ruby retry语句**
+
+```ruby
+for i in 1..5
+   retry if  i > 2
+   puts "局部变量的值为 #{i}"
+end
+```

@@ -929,3 +929,112 @@ for i in 1..5
    puts "局部变量的值为 #{i}"
 end
 ```
+
+**Ruby方法**
+
+Ruby方法与其他编程语言中的函数类似。Ruby方法用于捆绑一个或多个重复的语句到一个单元中。
+
+方法名以小写字母开头。如果以大写字母作为方法名的开头，Ruby可能会把它当做常量，从而导致不正确的解析调用
+
+*方法应该在调用之前定义*，否则Ruby会产生未定义的方法调用异常
+
+Ruby方法定义的语法
+
+```ruby
+def method_name [( [arg [= default]]...[, * arg [, &expr ]])]
+    expr...
+end
+```
+
+当要调用方法时，只需要使用方法名即可,但是当调用带参数的方法时，在写方法名时还要带上参数
+
+```ruby
+def testfunc(a1="Ruby", a2="Perl")
+    puts "编程语言为 #{a1}"
+    puts "编程语言为 #{a2}"
+end
+testfunc "C", "C++"
+testfunc
+```
+
+**从方法返回值**
+
+Ruby中的每个方法默认都会返回一个值。这个返回值的是最后一个语句的值.例如:
+
+```ruby
+def test
+    i = 100
+    j = 10
+    k = 0
+end
+```
+
+**Ruby return语句**
+
+Ruby中的return语句用于从Ruby方法中返回一个或多个值
+
+如果给出超过两个的表达式，包含这些值的数组将是返回值。如果未给出表达式，nil将是返回值
+
+```ruby
+def test
+    i = 100
+    j = 200
+    k = 300
+    return i, j, k
+end
+var = test
+puts var
+```
+
+可变数量的参数
+
+假设您声明了一个带有两个参数的方法，当您调用该方法时，您同时还需要传递两个参数。
+
+但是，Ruby允许声明参数数量可变的方法
+
+```ruby
+def sample (*test)
+    puts "参数个数为 #{test.length}"
+    for i in 0...test.length
+        puts "参数值为 #{test[i]}"
+    end
+end
+
+sample "Zara", "6", "F"
+sample "Mac", "36", "M", "MCA"
+```
+
+**Ruby类方法**
+
+和其他编程语言的静态方法类似，当方法定义在类的外部，方法默认标记为`private`。 另一方面，如果方法定义在类中的，则默认标记为`public`，方法默认的可见性和`private`标记可通过模块(Module)的`public`或`private`改变。
+
+当想要访问类的方法时，首先需要实例化类。使用对象，可以访问类的的任何成员。
+Ruby提供了一种不用实例化即可访问方法的方式。
+
+```ruby
+class Accounts
+    def reading_charge
+    end
+    def Accounts.return_data
+    end
+end
+```
+
+**Ruby alias语句**
+
+这个语句英语为方法或全局变量起别名。别名不能在方法主体内定义。即使方法被重写，方法的别名也保持方法的当前定义。为编号的全局变量($1, $2...)起别名是被禁止的。重写内置的全局变量可能会导致严重的问题。
+
+```ruby
+alias foo bar
+alias $MATCH $&
+```
+
+**Ruby undef语句**
+
+这个语句用于取消方法定义。undef不能出现在方法主体内。通过使用undef和alias，类的接口可以从父类独立修改.
+
+*注意：在自身内部方法调用时，它可能会破坏程序*
+
+```ruby
+undef bar
+```

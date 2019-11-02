@@ -1038,3 +1038,166 @@ alias $MATCH $&
 ```ruby
 undef bar
 ```
+
+**Ruby块**
+
+* 块由大量的代码组成
+* 需要给块取一个名称
+* 块中的代码总是包含在大括号`{}`内
+* 块中试与从其具有相同名称的函数调用。
+* 可以使用yield语句来调用块
+
+**yield语句**
+
+```ruby
+def test
+    puts "在test方法内"
+    yield
+    puts "你又回到了test方法内"
+    yield
+end
+
+test {puts "在块内"}
+
+```
+
+```ruby
+def test
+    yield 5
+    puts "在test方法内"
+    yield 100
+end
+test {|i| puts "在块#{i}内"}
+```
+
+*注意：yield语句后可跟多个参数*
+
+**块和方法**
+
+```ruby
+def test
+    yield
+end
+test {puts "Hello word"}
+```
+
+**BEGIN和END块**
+
+```ruby
+BEGIN {
+    # BEGIN 代码块
+    puts "BEGIN 代码块"
+}
+
+END {
+    puts "END 代码块"
+}
+
+puts "MAIN 代码块"
+```
+
+**Ruby模块(Module)**
+
+模块`(Module)`是一种把方法、类和常量组合在一起的方式。模块`(Module)`的好处:
+
+* 模块提供了一个`命名空间`和避免名字冲突
+* 模块实现了mixin装置
+
+模块`(Module)`定义了一个命名空间，相当于一个沙盒，在里面的方法和常量不会与其他地方的方法常量冲突。模块类似于类，但有些许不同
+
+* 模块不能实例化
+* 模块没有子类
+* 模块只能被另一个模块定义
+
+模块常量命名与类常量命名类似，以大写字母开头。方法定义看起来也相似：模块方法定义与类方法定义类似。通过类方法，可以在类方法名称前面放置模块名称和一个点号来调用模块，可以使用模块名称和两个冒号来引用一个常量
+
+```ruby
+module Trig
+    PI = 3.141592654
+    def Trig.sin(x)
+    # ...
+    end
+    def Trig.cos(x)
+    #...
+    end
+end
+```
+
+**Ruby require语句**
+
+require 语句类似于 C 和 C++ 中的 include 语句以及 Java 中的 import 语句。如果一个第三方的程序想要使用任何已定义的模块，则可以简单地使用 Ruby require 语句来加载模块文件：
+
+```ruby
+require 'trig.rb'
+require 'moral'
+
+y = Trig.sin(Trig::PI/4)
+
+```
+
+**Ruby include语句**
+
+```ruby
+module Week
+   FIRST_DAY = "Sunday"
+   def Week.weeks_in_month
+      puts "You have four weeks in a month"
+   end
+   def Week.weeks_in_year
+      puts "You have 52 weeks in a year"
+   end
+end
+
+$LOAD_PATH << '.'
+require "support"
+ 
+class Decade
+include Week
+   no_of_yrs=10
+   def no_of_months
+      puts Week::FIRST_DAY
+      number=10*12
+      puts number
+   end
+end
+d1=Decade.new
+puts Week::FIRST_DAY
+Week.weeks_in_month
+Week.weeks_in_year
+d1.no_of_months
+```
+
+**Ruby 中的 Mixins**
+
+Ruby 不直接支持多重继承，但是 Ruby 的模块（Module）有另一个神奇的功能。它几乎消除了多重继承的需要，提供了一种名为 mixin 的装置。
+
+Ruby 没有真正实现多重继承机制，而是采用成为mixin技术作为替代品。将模块include到类定义中，模块中的方法就mix进了类中。
+
+```ruby
+module A
+   def a1
+   end
+   def a2
+   end
+end
+module B
+   def b1
+   end
+   def b2
+   end
+end
+ 
+class Sample
+include A
+include B
+   def s1
+   end
+end
+ 
+samp=Sample.new
+samp.a1
+samp.a2
+samp.b1
+samp.b2
+samp.s1
+```

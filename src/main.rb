@@ -148,3 +148,12 @@ while $i < $num  do
    puts("在循环语句中 i = #$i" )
    $i +=1
 end
+
+def test
+    yield 5
+    puts "在test方法内"
+    yield 100
+end
+test {|i| puts "在块#{i}内"}
+
+

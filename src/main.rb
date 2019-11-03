@@ -161,24 +161,58 @@ module A
     end
     def a2
     end
- end
- module B
+end
+module B
     def b1
     end
     def b2
     end
- end
+end
   
- class Sample
- include A
- include B
+class Sample
+include A
+include B
     def s1
     end
- end
+end
   
- samp=Sample.new
- samp.a1
- samp.a2
- samp.b1
- samp.b2
- samp.s1
+samp = Sample.new
+samp.a1
+samp.a2
+samp.b1
+samp.b2
+samp.s1
+
+"abc \0\0abc \0\0".unpack('A6Z6')   #=> ["abc", "abc "]
+"abc \0\0".unpack('a3a3')           #=> ["abc", " \000\000"]
+"abc \0abc \0".unpack('Z*Z*')       #=> ["abc ", "abc "]
+"aa".unpack('b8B8')                 #=> ["10000110", "01100001"]
+"aaa".unpack('h2H2c')               #=> ["16", "61", 97]
+"\xfe\xff\xfe\xff".unpack('sS')     #=> [-2, 65534]
+"now=20is".unpack('M*')             #=> ["now is"]
+"whole".unpack('xax2aX2aX1aX2a')    #=> ["h", "e", "l", "l", "o"]
+
+names = Array.new(20)
+puts names.size
+puts names.length
+
+macnames = Array.new(4, "mac")
+puts "#{macnames}"
+
+nums = Array.new(10) { |e| e = e * 2 }
+puts "#{nums}"
+
+nums = Array.[](1, 2, 3, 4, 5)
+nums = Array([1, 2, 3, 4, 5])
+digits = Array(0..9)
+puts "#{digits}"
+
+digits = Array(0..9)
+num = digits.at(6)
+puts "#{num}"
+
+a = [ "a", "b", "c" ]
+n = [ 65, 66, 67 ]
+puts a.pack("A3A3A3")   #=> "a  b  c  "
+puts a.pack("a3a3a3")   #=> "a\000\000b\000\000c\000\000"
+puts n.pack("ccc")      #=> "ABC"

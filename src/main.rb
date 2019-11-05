@@ -216,3 +216,15 @@ n = [ 65, 66, 67 ]
 puts a.pack("A3A3A3")   #=> "a  b  c  "
 puts a.pack("a3a3a3")   #=> "a\000\000b\000\000c\000\000"
 puts n.pack("ccc")      #=> "ABC"
+
+ary = [1, 2, 3, 4, 5]
+ary.each do |i|
+   puts i
+end
+
+a = [1,2,3,4,5]
+b = Array.new
+b = a.collect{ |x|x }
+puts b
+
+

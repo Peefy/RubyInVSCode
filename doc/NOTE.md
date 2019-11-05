@@ -1609,3 +1609,975 @@ puts a.pack("A3A3A3")   #=> "a  b  c  "
 puts a.pack("a3a3a3")   #=> "a\000\000b\000\000c\000\000"
 puts n.pack("ccc")      #=> "ABC"
 ```
+
+**Ruby哈希(Hash)**
+
+哈希(Hash)是类似"key"=>"value"这样的键值对集合。哈希类似于一个数组，只不过它的索引不局限于使用数字。
+
+Hash的索引(或者叫"键")几乎可以是任何对象
+
+Hash虽然和数组类似，但却有一个很重要的区别：Hash的元素没有特定的顺序。如果顺序很重要的话就要使用数组了
+
+**创建哈希**
+
+与数组一样，有各种不同的方式来创建哈希。
+
+```ruby
+months = Hash.new("month")
+# 或
+months = Hash.new "month"
+```
+
+```ruby
+H = Hash["a" => 100, "b" => 200]
+
+puts "#{H['a']}"
+puts "#{H['b']}"
+```
+
+**哈希内置方法**
+
+如果需要调用Hash方法，需要先实例化一个Hash对象。下面是创建Hash对象实例的方式
+
+```ruby
+$, = ", "
+months = Hash.new("month")
+months = {"1" => "January", "2" => "February"}
+keys = month.keys
+puts "#{keys}"
+```
+
+序号|方法 & 描述
+-|-
+1|	`hash == other_hash` 检查两个哈希是否具有相同的键值对个数，键值对是否相互匹配，来判断两个哈希是否相等。
+2|	`hash.[key]` 使用键，从哈希引用值。如果未找到键，则返回默认值。
+3|	`hash.[key]=value` 把 value 给定的值与 key 给定的键进行关联。
+4|	`hash.clear` 从哈希中移除所有的键值对。
+5|	`hash.default(key = nil)` 返回 hash 的默认值，如果未通过 default= 进行设置，则返回 nil。（如果键在 hash 中不存在，则 [] 返回一个默认值。）
+6|	`hash.default = obj` 为 hash 设置默认值。
+7|	`hash.default_proc` 如果 hash 通过块来创建，则返回块。
+8|	`hash.delete(key) [or] array.delete(key) { |key| block }` 通过 key 从 hash 中删除键值对。如果使用了块 且未找到匹配的键值对，则返回块的结果。把它与 delete_if 进行比较。
+9|	`hash.delete_if { |key,value| block }` block 为 true 的每个块，从 hash 中删除键值对。
+10|	`hash.each { |key,value| block }` 遍历 hash，为每个 key 调用一次 block，传递 key-value 作为一个二元素数组。
+11|	`hash.each_key { |key| block }` 遍历 hash，为每个 key 调用一次 block，传递 key 作为参数。
+12|	`hash.each_key { |key_value_array| block }`  遍历 hash，为每个 key 调用一次 block，传递 key 和 value 作为参数。
+13|	`hash.each_value { |value| block }` 遍历 hash，为每个 key 调用一次 block，传递 value 作为参数。
+14|	`hash.empty?` 检查 hash 是否为空（不包含键值对），返回 true 或 false。
+15|	`hash.fetch(key [, default] ) [or] hash.fetch(key) { | key | block }` 通过给定的 key 从 hash 返回值。如果未找到 key，且未提供其他参数，则抛出 IndexError 异常；如果给出了 default，则返回 default；如果指定了可选的 block，则返回 block 的结果。
+16|	`hash.has_key?(key) [or] hash.include?(key) [or] hash.key?(key) [or] hash.member?(key)` 检查给定的 key 是否存在于哈希中，返回 true 或 false。
+17|	`hash.has_value?(value)` 检查哈希是否包含给定的 value。
+18|	`hash.index(value)`  为给定的 value 返回哈希中的 key，如果未找到匹配值则返回 `nil`。
+19|	`hash.indexes(keys)` 返回一个新的数组，由给定的键的值组成。找不到的键将插入默认值。该方法已被废弃，请使用 select。
+20|	`hash.indices(keys)`  返回一个新的数组，由给定的键的值组成。找不到的键将插入默认值。该方法已被废弃，请使用 select。
+21|	`hash.inspect` 返回哈希的打印字符串版本。
+22|	`hash.invert` 创建一个新的 hash，倒置 hash 中的 keys 和 values。也就是说，在新的哈希中，hash 中的键将变成值，值将变成键。
+23|	`hash.keys` 创建一个新的数组，带有 hash 中的键。
+24|	`hash.length` 以整数形式返回 hash 的大小或长度。
+25|	`hash.merge(other_hash) [or] hash.merge(other_hash) { |key, oldval, newval| block }` 返回一个新的哈希，包含 hash 和 other_hash 的内容，重写 hash 中与 other_hash 带有重复键的键值对。
+26|	`hash.merge!(other_hash) [or] hash.merge!(other_hash) { |key, oldval, newval| block }` 与 merge 相同，但实际上 hash 发生了变化。
+27|	`hash.rehash` 基于每个 key 的当前值重新建立 hash。如果插入后值发生了改变，该方法会重新索引 hash。
+28|	`hash.reject { |key, value| block }` 类似 delete_if, 但作用在一个拷贝的哈希上。相等于 hsh.dup.delete_if。
+29|	`hash.reject! { |key, value| block }`  相等于 delete_if, 但是如果没有修改，返回 nil。
+30|	`hash.replace(other_hash)` 把 hash 的内容替换为 other_hash 的内容。
+31|	`hash.select { |key, value| block }` 返回一个新的数组，由 block 返回 true 的 hash 中的键值对组成。
+32|	`hash.shift` 从 hash 中移除一个键值对，并把该键值对作为二元素数组返回。
+33|	`hash.size` 以整数形式返回 hash 的 size 或 length。
+34|	`hash.sort` 把 hash 转换为一个包含键值对数组的二维数组，然后进行排序。
+35|	`hash.store(key, value)` 存储 hash 中的一个键值对。
+36|	`hash.to_a` 从 hash 中创建一个二维数组。每个键值对转换为一个数组，所有这些数组都存储在一个数组中。
+37|	`hash.to_hash` 返回 hash（self）。
+38|	`hash.to_s` 把 hash 转换为一个数组，然后把该数组转换为一个字符串。
+39|	`hash.update(other_hash) [or] hash.update(other_hash) {|key, oldval, newval| block}` 返回一个新的哈希，包含 hash 和 other_hash 的内容，重写 hash 中与 other_hash 带有重复键的键值对。
+40|	`hash.value?(value)` 检查 hash 是否包含给定的 value。
+41|	`hash.values` 返回一个新的数组，包含 hash 的所有值。
+42|	`hash.values_at(obj, ...)` 返回一个新的数组，包含 hash 中与给定的键相关的值。
+
+**Ruby 日期和时间**
+
+`Time类`在Ruby中用于表示日期和时间。它是基于操作系统提供的系统日期和时间之上。该类可能无法表示1970年之前或者2038年之后的日期
+
+```ruby
+time1 = Time.new
+puts "当前时间：" + time1.inspect
+
+# Time.now 功能相同
+time2 = Time.now
+puts "当前时间：" + time2.inspect
+```
+
+**获取Date & Time组件**
+
+```ruby
+time = Time.new
+# Time 的组件
+puts "当前时间 : " + time.inspect
+puts time.year    # => 日期的年份
+puts time.month   # => 日期的月份（1 到 12）
+puts time.day     # => 一个月中的第几天（1 到 31）
+puts time.wday    # => 一周中的星期几（0 是星期日）
+puts time.yday    # => 365：一年中的第几天
+puts time.hour    # => 23：24 小时制
+puts time.min     # => 59
+puts time.sec     # => 59
+puts time.usec    # => 999999：微秒
+puts time.zone    # => "UTC"：时区名称
+```
+
+**Time.utc/Time.gm/Time.local函数**
+
+```ruby
+# July 8, 2008
+Time.local(2008, 7, 8)  
+# July 8, 2008, 09:10am，本地时间
+Time.local(2008, 7, 8, 9, 10)   
+# July 8, 2008, 09:10 UTC
+Time.utc(2008, 7, 8, 9, 10)  
+# July 8, 2008, 09:10:11 GMT （与 UTC 相同）
+Time.gm(2008, 7, 8, 9, 10, 11)
+```
+
+```ruby
+# 返回从纪元以来的秒数
+time = Time.now.to_i  
+ 
+# 把秒数转换为 Time 对象
+Time.at(time)
+ 
+# 返回从纪元以来的秒数，包含微妙
+time = Time.now.to_f
+```
+
+**时区和夏令时**
+
+```ruby
+time = Time.new
+ 
+# 这里是解释
+time.zone       # => "UTC"：返回时区
+time.utc_offset # => 0：UTC 是相对于 UTC 的 0 秒偏移
+time.zone       # => "PST"（或其他时区）
+time.isdst      # => false：如果 UTC 没有 DST（夏令时）
+time.utc?       # => true：如果在 UTC 时区
+time.localtime  # 转换为本地时区
+time.gmtime     # 转换回 UTC
+time.getlocal   # 返回本地区中的一个新的 Time 对象
+time.getutc     # 返回 UTC 中的一个新的 Time 对象
+```
+
+**格式化时间和日期**
+
+```ruby
+time = Time.new
+ 
+puts time.to_s
+puts time.ctime
+puts time.localtime
+puts time.strftime("%Y-%m-%d %H:%M:%S")
+```
+
+**时间格式化指令**
+
+指令|描述
+-|-
+%a|	星期几名称的缩写（比如 Sun）。
+%A|	星期几名称的全称（比如 Sunday）。
+%b|	月份名称的缩写（比如 Jan）。
+%B|	月份名称的全称（比如 January）。
+%c|	优选的本地日期和时间表示法。
+%d|	一个月中的第几天（01 到 31）。
+%H|	一天中的第几小时，24 小时制（00 到 23）。
+%I|	一天中的第几小时，12 小时制（01 到 12）。
+%j|	一年中的第几天（001 到 366）。
+%m|	一年中的第几月（01 到 12）。
+%M|	小时中的第几分钟（00 到 59）。
+%p|	子午线指示（AM 或 PM）。
+%S|	分钟中的第几秒（00 或 60）。
+%U|	当前年中的周数，从第一个星期日（作为第一周的第一天）开始（00 到 53）。
+%W|	当前年中的周数，从第一个星期一（作为第一周的第一天）开始（00 到 53）。
+%w|	一星期中的第几天（Sunday 是 0，0 到 6）。
+%x|	只有日期没有时间的优先表示法。
+%X|	只有时间没有日期的优先表示法。
+%y|	不带世纪的年份表示（00 到 99）。
+%Y|	带有世纪的年份。
+%Z|	时区名称。
+%%|	% 字符。
+
+```ruby
+now = Time.now           # 当前时间
+puts now
+ 
+past = now - 10          # 10 秒之前。Time - number => Time
+puts past
+ 
+future = now + 10        # 从现在开始 10 秒之后。Time + number => Time
+puts future
+ 
+diff = future - now      # => 10  Time - Time => 秒数
+puts diff
+```
+
+**Ruby范围(Range)**
+
+范围（Range）无处不在：a 到 z、 0 到 9、等等。Ruby 支持范围，并允许我们以不同的方式使用范围：
+
+* 作为序列的范围
+* 作为条件的范围
+* 作为间隔的范围
+
+**作为序列的范围**
+
+范围的第一个也是最常见的用途是表达序列。序列有一个起点、一个终点和一个在序列产生连续值的方式。
+
+Ruby 使用 ''..'' 和 ''...'' 范围运算符创建这些序列。两点形式创建一个包含指定的最高值的范围，三点形式创建一个不包含指定的最高值的范围。
+
+范围的第一个也是最常见的用途是表达序列。序列有一个起点、一个终点和一个在序列产生连续值的方式。
+
+Ruby 使用 ''..'' 和 ''...'' 范围运算符创建这些序列。两点形式创建一个包含指定的最高值的范围，三点形式创建一个不包含指定的最高值的范围。
+
+```ruby
+#!/usr/bin/ruby
+ 
+$, =", "   # Array 值分隔符
+range1 = (1..10).to_a
+range2 = ('bar'..'bat').to_a
+ 
+puts "#{range1}"
+puts "#{range2}"
+```
+
+```ruby
+#!/usr/bin/ruby
+# -*- coding: UTF-8 -*-
+ 
+# 指定范围
+digits = 0..9
+ 
+puts digits.include?(5)
+ret = digits.min
+puts "最小值为 #{ret}"
+ 
+ret = digits.max
+puts "最大值为 #{ret}"
+ 
+ret = digits.reject {|i| i < 5 }
+puts "不符合条件的有 #{ret}"
+ 
+digits.each do |digit|
+   puts "在循环中 #{digit}"
+end
+```
+
+**作为条件的范围**
+
+```ruby
+#!/usr/bin/ruby
+# -*- coding: UTF-8 -*-
+ 
+score = 70
+ 
+result = case score
+when 0..40
+    "糟糕的分数"
+when 41..60
+    "快要及格"
+when 61..70
+    "及格分数"
+when 71..100
+       "良好分数"
+else
+    "错误的分数"
+end
+ 
+puts result
+```
+
+**作为间隔的范围**
+
+```ruby
+if ((1..10) === 5)
+  puts "5 在 (1..10)"
+end
+ 
+if (('a'..'j') === 'c')
+  puts "c 在 ('a'..'j')"
+end
+ 
+if (('a'..'j') === 'z')
+  puts "z 在 ('a'..'j')"
+end
+```
+
+**Ruby each迭代器**
+
+```ruby
+collection.each do |variable|
+   code
+end
+```
+
+```ruby
+ary = [1, 2, 3, 4, 5]
+ary.each do |i|
+   puts i
+end
+```
+
+**Ruby collect迭代器**
+
+```ruby
+#!/usr/bin/ruby
+ 
+a = [1,2,3,4,5]
+b = Array.new
+b = a.collect{ |x|x }
+puts b
+```
+
+**Ruby文件的输入与输出**
+
+Ruby提供了一整套I/O相关的方法，在内核(Kernel)模块中实现。所有的IO方法派生自IO类。
+
+类IO提供了所有基础的方法，比如`read`,`write`,`gets`,`puts`,`readline`,`getc`,`printf`
+
+**puts语句**
+
+puts 语句指示程序显示存储在变量中的值。这将在每行末尾添加一个新行。
+
+```ruby
+val1 = "This is variable one"
+val2 = "This is variable two"
+puts val1
+puts val2
+```
+
+**gets语句**
+
+gets 语句可用于获取来自名为 STDIN 的标准屏幕的用户输入。
+
+```ruby
+puts "Enter a value :"
+val = gets
+puts val
+```
+
+**putc语句**
+
+```ruby
+str="Hello Ruby"
+putc str
+```
+
+**print 语句**
+
+```ruby
+#!/usr/bin/ruby
+ 
+print "Hello World"
+print "Good Morning"
+```
+
+**打开和关闭文件**
+
+截至现在，您已经读取并写入标准输入和输出。现在，我们将看看如何操作实际的数据文件。
+
+**File.new方法**
+
+您可以使用 `File.new` 方法创建一个 `File` 对象用于读取、写入或者读写，读写权限取决于 mode 参数。最后，您可以使用 `File.close` 方法来关闭该文件。
+
+**File.open方法**
+
+
+模式|描述
+-|-
+r	|只读模式。文件指针被放置在文件的开头。这是默认模式。
+r+	|读写模式。文件指针被放置在文件的开头。
+w	|只写模式。如果文件存在，则重写文件。如果文件不存在，则创建一个新文件用于写入。
+w+	|读写模式。如果文件存在，则重写已存在的文件。如果文件不存在，则创建一个新文件用于读写。
+a	|只写模式。如果文件存在，则文件指针被放置在文件的末尾。也就是说，文件是追加模式。如果文件不存在，则创建一个新文件用于写入。
+a+	|读写模式。如果文件存在，则文件指针被放置在文件的末尾。也就是说，文件是追加模式。如果文件不存在，则创建一个新文件用于读写。
+
+**读取和写入文件**
+
+用于简单 I/O 的方法也可用于所有 file 对象。所以，gets 从标准输入读取一行，aFile.gets 从文件对象 aFile 读取一行。
+
+但是，I/O 对象提供了访问方法的附加设置，为我们提供了便利。
+
+**sysread**
+
+您可以使用方法 sysread 来读取文件的内容。当使用方法 sysread 时，您可以使用任意一种模式打开文件。例如：
+
+下面是输入文本文件：
+
+```ruby
+aFile = File.new("input.txt", "r")
+if aFile
+    content = aFile.sysread(20)
+    puts content
+else
+    puts "Unable to open file!"
+end
+```
+
+**syswrite**
+
+您可以使用方法 syswrite 来向文件写入内容。当使用方法 syswrite 时，您需要以写入模式打开文件。例如：
+
+```ruby
+aFile = File.new("input.txt", "r+")
+if aFile
+   aFile.syswrite("ABCDEF")
+else
+   puts "Unable to open file!"
+end
+```
+
+**each_byte 方法**
+
+```ruby
+aFile = File.new("input.txt", "r+")
+if aFile
+   aFile.syswrite("ABCDEF")
+   aFile.rewind
+   aFile.each_byte {|ch| putc ch; putc ?. }
+else
+   puts "Unable to open file!"
+end
+```
+
+**IO.readlines 方法**
+
+类 File 是类 IO 的一个子类。类 IO 也有一些用于操作文件的方法。
+
+IO.readlines 是 IO 类中的一个方法。该方法逐行返回文件的内容。下面的代码显示了方法 IO.readlines 的使用：
+
+```ruby
+arr = IO.readlines("input.txt")
+puts arr[0]
+puts arr[1]
+```
+
+**IO.foreach 方法**
+
+该方法也逐行返回输出。方法 foreach 与方法 readlines 之间不同的是，方法 foreach 与块相关联。但是，不像方法 readlines，方法 foreach 不是返回一个数组。例如：
+
+```ruby
+IO.foreach("input.txt"){|block| puts block}
+```
+
+**重命名和删除文件**
+
+```ruby
+File.rename( "test1.txt", "test2.txt" )
+
+File.delete("text2.txt")
+```
+
+**文件模式与所有权**
+
+使用带有掩码的 chmod 方法来改变文件的模式或权限/访问列表：
+
+下面的实例改变一个已存在文件 test.txt 的模式为一个掩码值：
+
+```ruby
+file = File.new( "test.txt", "w" )
+file.chmod( 0755 )
+```
+
+掩码|描述
+-|-
+0700|	rwx 掩码，针对所有者
+0400|	r ，针对所有者
+0200|	w ，针对所有者
+0100|	x ，针对所有者
+0070|	rwx 掩码，针对所属组
+0040|	r ，针对所属组
+0020|	w ，针对所属组
+0010|	x ，针对所属组
+0007|	rwx 掩码，针对其他人
+0004|	r ，针对其他人
+0002|	w ，针对其他人
+0001|	x ，针对其他人
+4000|	执行时设置用户 ID
+2000|	执行时设置所属组 ID
+1000|	保存交换文本，甚至在使用后也会保存
+
+**文件查询**
+
+```ruby
+File.open("file.rb") if File::exists?( "file.rb" )
+
+File.file?( "text.txt" )
+```
+
+下面的命令检查给定的文件名是否是一个目录：
+
+```ruby
+# 一个目录
+File::directory?( "/usr/local/bin" ) # => true
+ 
+# 一个文件
+File::directory?( "file.rb" ) # => false
+```
+
+下面的命令检查给定的文件名是否是一个目录：
+
+```ruby
+# 一个目录
+File::directory?( "/usr/local/bin" ) # => true
+ 
+# 一个文件
+File::directory?( "file.rb" ) # => false
+```
+
+下面的命令检查文件是否可读、可写、可执行：
+
+```ruby
+File.readable?( "test.txt" )   # => true
+File.writable?( "test.txt" )   # => true
+File.executable?( "test.txt" ) # => false
+```
+
+下面的命令检查文件是否大小为零：
+
+```ruby
+File.zero?( "test.txt" )      # => true
+```
+
+下面的命令返回文件的大小：
+
+```ruby
+File.size?( "text.txt" )     # => 1002
+```
+
+下面的命令用于检查文件的类型：
+
+```ruby
+File::ftype( "test.txt" )     # => file
+```
+
+ftype 方法通过返回下列中的某个值来标识了文件的类型：file、 directory、 characterSpecial、 blockSpecial、 fifo、 link、 socket 或 unknown。
+
+下面的命令用于检查文件被创建、修改或最后访问的时间：
+
+```ruby
+File::ctime( "test.txt" ) # => Fri May 09 10:06:37 -0700 2008
+File::mtime( "text.txt" ) # => Fri May 09 10:44:44 -0700 2008
+File::atime( "text.txt" ) # => Fri May 09 10:45:01 -0700 2008
+```
+
+**Ruby中的目录**
+
+所有的文件都是包含在目录中，Ruby 提供了处理文件和目录的方式。File 类用于处理文件，Dir 类用于处理目录。
+
+为了在 Ruby 程序中改变目录，请使用 Dir.chdir。下面的实例改变当前目录为 /usr/bin。
+
+```ruby
+Dir.chdir("/usr/bin")
+```
+
+您可以通过 Dir.pwd 查看当前目录：
+
+```ruby
+puts Dir.pwd # 返回当前目录，类似 /usr/bin
+```
+
+您可以使用 Dir.entries 获取指定目录内的文件和目录列表：
+
+```ruby
+puts Dir.entries("/usr/bin").join(' ')
+```
+
+Dir.entries 返回一个数组，包含指定目录内的所有项。Dir.foreach 提供了相同的功能：
+
+```ruby
+Dir.foreach("/usr/bin") do |entry|
+   puts entry
+end
+```
+
+获取目录列表的一个更简洁的方式是通过使用 Dir 的类数组的方法：
+
+```ruby
+Dir["/usr/bin/*"]
+```
+
+Dir.mkdir 可用于创建目录：
+
+```ruby
+Dir.mkdir("mynewdir")
+```
+
+**创建目录**
+
+您也可以通过 mkdir 在新目录（不是已存在的目录）上设置权限：
+
+*注意：掩码 755 设置所有者（owner）、所属组（group）、每个人（world [anyone]）的权限为 rwxr-xr-x，其中 r = read 读取，w = write 写入，x = execute 执行。*
+
+```ruby
+Dir.mkdir( "mynewdir", 755 )
+```
+
+**删除目录**
+
+Dir.delete 可用于删除目录。Dir.unlink 和 Dir.rmdir 执行同样的功能，为我们提供了便利。
+
+```ruby
+Dir.delete("testdir")
+```
+
+**创建文件&临时目录**
+
+临时文件是那些在程序执行过程中被简单地创建，但不会永久性存储的信息。
+
+Dir.tmpdir 提供了当前系统上临时目录的路径，但是该方法默认情况下是不可用的。为了让 Dir.tmpdir 可用，使用必需的 'tmpdir' 是必要的。
+
+您可以把 Dir.tmpdir 和 File.join 一起使用，来创建一个独立于平台的临时文件：
+
+```ruby
+require 'tmpdir'
+tempfilename = File.join(Dir.tmpdir, "tingtong")
+tempfile = File.new(tempfilename, "w")
+tempfile.puts "This is a temporary file"
+tempfile.close
+File.delete(tempfilename)
+```
+
+这段代码创建了一个临时文件，并向其中写入数据，然后删除文件。Ruby 的标准库也包含了一个名为 Tempfile 的库，该库可用于创建临时文件：
+
+```ruby
+require 'tempfile'
+f = Tempfile.new('tingtong')
+f.puts "Hello"
+puts f.path
+f.close
+```
+
+**Ruby File类和方法**
+
+File 表示一个连接到普通文件的 stdio 对象。open 为普通文件返回该类的一个实例。
+
+序号|方法 & 描述
+-|-
+1|	File::atime( path) 返回 path 的最后访问时间。
+2|	File::basename( path[, suffix]) 返回 path 末尾的文件名。如果指定了 suffix，则它会从文件名末尾被删除。例如：File.basename("/home/users/bin/ruby.exe") #=> "ruby.exe"
+3|	File::blockdev?( path) 如果 path 是一个块设备，则返回 true。
+4|	File::chardev?( path) 如果 path 是一个字符设备，则返回 true。
+5|	File::chmod( mode, path...) 改变指定文件的权限模式。
+6|	File::chown( owner, group, path...) 改变指定文件的所有者和所属组。
+7|	File::ctime( path) 返回 path 的最后一个 inode 更改时间。
+8|	File::delete( path...) File::unlink( path...) 删除指定的文件。
+9|	File::directory?( path) 如果 path 是一个目录，则返回 true。
+10|	File::dirname( path) 返回 path 的目录部分，不包括最后的文件名。
+11|	File::executable?( path) 如果 path 是可执行的，则返回 true。
+12|	File::executable_real?( path) 如果 path 通过真正的用户权限是可执行的，则返回 true。
+13|	File::exist?( path) 如果 path 存在，则返回 true。
+1|	File::expand_path( path[, dir]) 返回 path 的绝对路径，扩展 ~ 为进程所有者的主目录，~user 为用户的主目录。相对路径是相对于 dir 指定的目录，如果 dir 被省略则相对于当前工作目录。
+14|	File::file?( path) 如果 path 是一个普通文件，则返回 true。
+15|	File::ftype( path) 返回下列其中一个字符串，表示文件类型： file - 普通文件 directory - 目录 characterSpecial - 字符特殊文件 blockSpecial - 块特殊文件 fifo - 命名管道（FIFO） link - 符号链接 socket - Socket unknown - 未知的文件类型
+16|	File::grpowned?( path) 如果 path 由用户的所属组所有，则返回 true。
+17|	File::join( item...) 返回一个字符串，由指定的项连接在一起，并使用 File::Separator 进行分隔。例如：File::join("", "home", "usrs", "bin") # => "/home/usrs/bin"
+18|	File::link( old, new) 创建一个到文件 old 的硬链接。
+19|	File::lstat( path) 与 stat 相同，但是它返回自身符号链接上的信息，而不是所指向的文件。
+20|	File::mtime( path) 返回 path 的最后一次修改时间。
+21|	File::new( path[, mode="r"]) File::open( path[, mode="r"]) File::open( path[, mode="r"]) {|f| ...} 打开文件。如果指定了块，则通过传递新文件作为参数来执行块。当块退出时，文件会自动关闭。这些方法有别于 Kernel.open，即使 path 是以 | 开头，后续的字符串也不会作为命令运行。
+22|	File::owned?( path) 如果 path 由有效的用户所有，则返回 true。
+23|	File::pipe?( path) 如果 path 是一个管道，则返回 true。
+24|	File::readable?( path) 如果 path 是可读的，则返回 true。
+25|	File::readable_real?( path) 如果 path 通过真正的用户权限是可读的，则返回 true。
+25|	File::readlink( path) 返回 path 所指向的文件。
+26|	File::rename( old, new) 改变文件名 old 为 new。
+27|	File::setgid?( path) 如果设置了 path 的 set-group-id 权限位，则返回 true。
+28|	File::setuid?( path) 如果设置了 path 的 set-user-id 权限位，则返回 true。
+29|	File::size( path) 返回 path 的文件大小。
+30|	File::size?( path) 返回 path 的文件大小，如果为 0 则返回 nil。
+31|	File::socket?( path) 如果 path 是一个 socket，则返回 true。
+32|	File::split( path) 返回一个数组，包含 path 的内容，path 被分成 File::dirname(path) 和 File::basename(path)。
+33|	File::stat( path) 返回 path 上带有信息的 File::Stat 对象。
+34|	File::sticky?( path) 如果设置了 path 的 sticky 位，则返回 true。
+35|	File::symlink( old, new) 创建一个指向文件 old 的符号链接。
+36|	File::symlink?( path) 如果 path 是一个符号链接，则返回 true。
+37|	File::truncate( path, len) 截断指定的文件为 len 字节。
+38|	File::unlink( path...) 删除 path 给定的文件。
+39|	File::umask([ mask]) 如果未指定参数，则为该进程返回当前的 umask。如果指定了一个参数，则设置了 umask，并返回旧的 umask。
+40|	File::utime( atime, mtime, path...) 改变指定文件的访问和修改时间。
+41|	File::writable?( path) 如果 path 是可写的，则返回 true。
+42|	File::writable_real?( path) 如果 path 通过真正的用户权限是可写的，则返回 true。
+43|	File::zero?( path) 如果 path 的文件大小是 0，则返回 true。
+
+**Ruby File类实例方法**
+
+假设 f 是 File 类的一个实例：
+
+序号|方法 & 描述
+-|-
+1|	f.atime 返回 f 的最后访问时间。
+2|	f.chmode( mode) 改变 f 的权限模式。
+3|	f.chown( owner, group) 改变 f 的所有者和所属组。
+4|	f.ctime 返回 f 的最后一个 inode 更改时间。
+5|	f.flock( op) 调用 flock(2)。op 可以是 0 或一个逻辑值或 File 类常量 LOCK_EX、LOCK_NB、LOCK_SH 和 LOCK_UN。
+6|	f.lstat 与 stat 相同，但是它返回自身符号链接上的信息，而不是所指向的文件。
+7|	f.mtime 返回 f 的最后修改时间。
+8|	f.path 返回用于创建 f 的路径名。
+9|	f.reopen( path[, mode="r"]) 重新打开文件。
+10|	f.truncate( len) 截断 f 为 len 字节。
+
+**Ruby Dir 类和方法**
+
+Dir 是一个表示用于给出操作系统中目录中的文件名的目录流。Dir 类也拥有与目录相关的操作，比如通配符文件名匹配、改变工作目录等。
+
+序号|方法 & 描述
+-|-
+1|	`Dir[pat]` ·Dir::glob( pat)· 返回一个数组，包含与指定的通配符模式 pat 匹配的文件名： `*` - 匹配包含 null 字符串的任意字符串 `**` - 递归地匹配任意字符串 `?` - 匹配任意单个字符 `[...]` - 匹配封闭字符中的任意一个 `{a,b...}` - 匹配字符串中的任意一个 `Dir["foo.*"]` # 匹配 "foo.c"、 "foo.rb" 等等 `Dir["foo.?"]` # 匹配 "foo.c"、 "foo.h" 等等
+2|	Dir::chdir( path) 改变当前目录。
+3|	Dir::chroot( path) 改变根目录（只允许超级用户）。并不是在所有的平台上都可用。
+4|	Dir::delete( path) 删除 path 指定的目录。目录必须是空的。
+5|	Dir::entries( path) 返回一个数组，包含目录 path 中的文件名。
+6|	Dir::foreach( path) {| f| ...} 为 path 指定的目录中的每个文件执行一次块。
+7|	Dir::getwd Dir::pwd 返回当前目录。
+8|	Dir::mkdir( path[, mode=0777]) 创建 path 指定的目录。权限模式可被 File::umask 的值修改，在 Win32 的平台上会被忽略。
+9|	Dir::new( path) Dir::open( path) Dir::open( path) {| dir| ...} 返回 path 的新目录对象。如果 open 给出一个块，则新目录对象会传到该块，块会在终止前关闭目录对象。
+10|	Dir::pwd 参见 Dir::getwd。
+11|	Dir::rmdir( path) Dir::unlink( path) Dir::delete( path) 删除 path 指定的目录。目录必须是空的。
+
+**Ruby Dir 类实例方法**
+
+假设 d 是 Dir 类的一个实例：
+
+序号|方法 & 描述
+-|-
+1|	`d.close` 关闭目录流。
+2|	`d.each {| f| ...}` 为 d 中的每一个条目执行一次块。
+3|	`d.pos d.tell` 返回 d 中的当前位置。
+4|	`d.pos= offset` 设置目录流中的位置。
+5|	`d.pos= pos d.seek(pos)` 移动到 d 中的某个位置。pos 必须是一个由 d.pos 返回的值或 0。
+6|	`d.read` 返回 d 的下一个条目。
+7|	`d.rewind` 移动 d 中的位置到第一个条目。
+8|	`d.seek(po s)` 参见 d.pos=pos。
+9|	`d.tell 参见 d.pos`。
+
+**Ruby异常**
+
+异常和执行总是被联系在一起。
+
+如果异常发生，则程序停止。异常用于处理各种类型的错误，这些错误可能在程序执行期间发生，所以要采取适当的行动，而不至于让程序完全停止。
+
+Ruby 提供了一个完美的处理异常的机制。我们可以在 `begin/end` 块中附上可能抛出异常的代码，并使用 `rescue` 子句告诉 Ruby 完美要处理的异常类型。
+
+异常语法
+
+```ruby
+begin #开始
+ 
+ raise.. #抛出异常
+ 
+rescue [ExceptionType = StandardException] #捕获指定类型的异常默认值是 StandardException
+ $! #表示异常信息
+ $@ #表示异常出现的代码位置
+else #其余异常
+ ..
+ensure #不管有没有异常，进入该代码块
+ 
+end #结束
+```
+
+从 begin 到 rescue 中的一切是受保护的。如果代码块执行期间发生了异常，控制会传到 rescue 和 end 之间的块。
+
+对于 begin 块中的每个 rescue 子句，Ruby 把抛出的异常与每个参数进行轮流比较。如果 rescue 子句中命名的异常与当前抛出的异常类型相同，或者是该异常的父类，则匹配成功。
+
+如果异常不匹配所有指定的错误类型，我们可以在所有的 rescue 子句后使用一个 else 子句。
+
+```ruby
+begin
+   file = open("/unexistant_file")
+   if file
+      puts "File opened successfully"
+   end
+rescue
+      file = STDIN
+end
+print file, "==", STDIN, "\n"
+```
+
+**使用 retry 语句**
+
+```ruby
+begin
+    # 这段代码抛出的异常将被下面的 rescue 子句捕获
+rescue
+    # 这个块将捕获所有类型的异常
+    retry  # 这将把控制移到 begin 的开头
+end
+```
+
+```ruby
+begin
+   file = open("/unexistant_file")
+   if file
+      puts "File opened successfully"
+   end
+rescue
+   fname = "existant_file"
+   retry
+end
+```
+
+以下是处理流程：
+
+* 打开时发生异常。
+* 跳到 rescue。fname 被重新赋值。
+* 通过 retry 跳到 begin 的开头。
+* 这次文件成功打开。
+* 继续基本的过程。
+
+**使用 raise 语句**
+
+```ruby
+raise 
+
+raise "Error Message" 
+ 
+raise ExceptionType, "Error Message"
+ 
+raise ExceptionType, "Error Message" condition
+```
+
+第一种形式简单地重新抛出当前异常（如果没有当前异常则抛出一个 RuntimeError）。这用在传入异常之前需要解释异常的异常处理程序中。
+
+第二种形式创建一个新的 RuntimeError 异常，设置它的消息为给定的字符串。该异常之后抛出到调用堆栈。
+
+第三种形式使用第一个参数创建一个异常，然后设置相关的消息为第二个参数。
+
+第四种形式与第三种形式类似，您可以添加任何额外的条件语句（比如 unless）来抛出异常。
+
+```ruby
+begin  
+    puts 'I am before the raise.'  
+    raise 'An error has occurred.'  
+    puts 'I am after the raise.'  
+rescue  
+    puts 'I am rescued.'  
+end  
+puts 'I am after the begin block.'
+```
+
+**使用retry语句**
+
+```ruby
+begin
+   file = open("/unexistant_file")
+   if file
+      puts "File opened successfully"
+   end
+rescue
+   fname = "existant_file"
+   retry
+end
+```
+
+**使用ensure语句**
+
+有时候，无论是否抛出异常，您需要保证一些处理在代码块结束时完成。例如，您可能在进入时打开了一个文件，当您退出块时，您需要确保关闭文件。
+
+ensure 子句做的就是这个。ensure 放在最后一个 rescue 子句后，并包含一个块终止时总是执行的代码块。它与块是否正常退出、是否抛出并处理异常、是否因一个未捕获的异常而终止，这些都没关系，ensure 块始终都会运行。
+
+```ruby
+begin
+  raise 'A test exception.'
+rescue Exception => e
+  puts e.message
+  puts e.backtrace.inspect
+ensure
+  puts "Ensuring execution"
+end
+```
+
+**使用else语句**
+
+```ruby
+begin 
+   #.. 过程 
+   #.. 抛出异常
+rescue 
+   #.. 处理错误
+else
+   #.. 如果没有异常则执行
+ensure 
+   #.. 最后确保执行
+   #.. 这总是会执行
+end
+```
+
+**Catch和Throw**
+
+raise 和 rescue 的异常机制能在发生错误时放弃执行，有时候需要在正常处理时跳出一些深层嵌套的结构。此时 catch 和 throw 就派上用场了。
+
+catch 定义了一个使用给定的名称（可以是 Symbol 或 String）作为标签的块。块会正常执行直到遇到一个 throw。
+
+```ruby
+throw :lablename
+#.. 这不会被执行
+catch :lablename do
+#.. 在遇到一个 throw 后匹配将被执行的 catch
+end
+ 
+或
+ 
+throw :lablename condition
+#.. 这不会被执行
+catch :lablename do
+#.. 在遇到一个 throw 后匹配将被执行的 catch
+end
+```
+
+```ruby
+def promptAndGet(prompt)
+   print prompt
+   res = readline.chomp
+   throw :quitRequested if res == "!"
+   return res
+end
+ 
+catch :quitRequested do
+   name = promptAndGet("Name: ")
+   age = promptAndGet("Age: ")
+   sex = promptAndGet("Sex: ")
+   # ..
+   # 处理信息
+end
+promptAndGet("Name:")
+```
+
+**类Exception**
+
+Ruby 的标准类和模块抛出异常。所有的异常类组成一个层次，包括顶部的 Exception 类在内。下一层是七种不同的类型：
+
+* **Interrupt**-
+* **NoMemoryError**-
+* **SignalException**-
+* **ScriptError**-
+* **StandardError**-
+* **SystemExit**-
+
+Fatal 是该层中另一种异常，但是 Ruby 解释器只在内部使用它。
+
+ScriptError 和 StandardError 都有一些子类，但是在这里我们不需要了解这些细节。最重要的事情是创建我们自己的异常类，它们必须是类 Exception 或其子代的子类。
+
+```ruby
+class FileSaveError < StandardError
+   attr_reader :reason
+   def initialize(reason)
+      @reason = reason
+   end
+end
+```
+
+```ruby
+File.open(path, "w") do |file|
+begin
+    # 写出数据 ...
+rescue
+    # 发生错误
+    raise FileSaveError.new($!)
+end
+end
+```

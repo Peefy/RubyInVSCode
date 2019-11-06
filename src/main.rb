@@ -227,4 +227,44 @@ b = Array.new
 b = a.collect{ |x|x }
 puts b
 
+class Box
+    # 构造函数
+    def initialize(w,h)
+       @width, @height = w, h
+    end
+  
+    # 访问器方法
+    def getWidth
+       @width
+    end
+  
+    def getHeight
+       @height
+    end
+
+   # 设置器方法
+    def setWidth=(value)
+        @width = value
+    end
+    def setHeight=(value)
+        @height = value
+    end
+    # 定义 to_s 方法
+    def to_s
+        "(w:#@width,h:#@height)"  # 对象的字符串格式
+    end
+
+end
+  
+# 创建对象，初始化盒子的高度与宽度
+box = Box.new(10, 20)
+  
+# 使用访问器方法
+x = box.getWidth()
+y = box.getHeight()
+  
+puts "盒子宽度 : #{x}"
+puts "盒子高度 : #{y}"
+
+
 

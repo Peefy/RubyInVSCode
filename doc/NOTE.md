@@ -3542,4 +3542,547 @@ ensure
 end
 ```
 
+**Ruby Mysql**
 
+Ruby 连接 Mysql 更高效的驱动 mysql2，目前也推荐使用这种方式连接 MySql。
+
+安装 mysql2 驱动：
+
+```cmd
+gem install mysql2
+```
+
+需要使用 –with-mysql-config 配置 mysql_config 的路径，如： `–with-mysql-config=/some/random/path/bin/mysql_config`。
+
+**连接**
+
+```ruby
+client = Mysql2::Client.new(:host => "localhost", :username => "root")
+```
+
+**查询**
+
+```ruby
+results = client.query("SELECT * FROM users WHERE group='githubbers'")
+```
+
+**特殊字符转义**
+
+```ruby
+escaped = client.escape("gi'thu\"bbe\0r's")
+results = client.query("SELECT * FROM users WHERE group='#{escaped}'")
+```
+
+**迭代结果集**
+
+```ruby
+results.each do |row|
+  # row 是哈希
+  # 键值是数据库字段
+  # 值都是对应 MySQL中数据
+  puts row["id"] # row["id"].class == Fixnum
+  if row["dne"]  # 不存在则是 nil
+    puts row["dne"]
+  end
+end
+```
+
+```ruby
+#!/usr/bin/ruby -w
+require 'mysql2'
+ 
+client = Mysql2::Client.new(
+    :host     => '127.0.0.1', # 主机
+    :username => 'root',      # 用户名
+    :password => '123456',    # 密码
+    :database => 'test',      # 数据库
+    :encoding => 'utf8'       # 编码
+    )
+results = client.query("SELECT VERSION()")
+results.each do |row|
+  puts row
+end
+```
+
+**连接结果选项**
+
+```ruby
+Mysql2::Client.new(
+  :host,
+  :username,
+  :password,
+  :port,
+  :database,
+  :socket = '/path/to/mysql.sock',
+  :flags = REMEMBER_OPTIONS | LONG_PASSWORD | LONG_FLAG | TRANSACTIONS | PROTOCOL_41 | SECURE_CONNECTION | MULTI_STATEMENTS,
+  :encoding = 'utf8',
+  :read_timeout = seconds,
+  :write_timeout = seconds,
+  :connect_timeout = seconds,
+  :reconnect = true/false,
+  :local_infile = true/false,
+  :secure_auth = true/false,
+  :default_file = '/path/to/my.cfg',
+  :default_group = 'my.cfg section',
+  :init_command => sql
+  )
+```
+
+**Ruby CGI**
+
+Ruby 是一门通用的语言，不仅仅是一门应用于WEB开发的语言，但 Ruby 在WEB应用及WEB工具中的开发是最常见的。
+
+使用Ruby不仅可以编写自己的SMTP服务器，FTP程序，或Ruby Web服务器，而且还可以使用Ruby进行CGI编程。
+
+**Ruby Socket**
+
+应用层通过传输层进行数据通信时，TCP和UDP会遇到同时为多个应用程序进程提供并发服务的问题。多个TCP连接或多个应用程序进程可能需要 通过同一个TCP协议端口传输数据。为了区别不同的应用程序进程和连接，许多计算机操作系统为应用程序与TCP／IP协议交互提供了称为套接字 (Socket)的接口，区分不同应用程序进程间的网络通信和连接。
+
+生成套接字，主要有3个参数：通信的目的IP地址、使用的传输 层协议(TCP或UDP)和使用的端口号。Socket原意是"插座"。通过将这3个参数结合起来，与一个"插座"Socket绑定，应用层就可以和传输 层通过套接字接口，区分来自不同应用程序进程或网络连接的通信，实现数据传输的并发服务。
+
+选项|描述
+-|-
+domain|	指明所使用的协议族，通常为 `PF_INET`, `PF_UNIX`, `PF_X25`, 等等。
+type|	指定socket的类型：`SOCK_STREAM` 或`SOCK_DGRAM`，`Socket`接口还定义了原始`Socket|（SOCK_RAW）`，允许程序使用低层协议
+protocol|	通常赋值0。
+hostname|	网络接口的标识符：字符串, 可以是主机名或IP地址 字符串 "`<broadcast>`", 指定 `INADDR_BROADCAST` 地址。0 长度的字符串, 指定`INADDR_ANY` 一个整数，解释为主机字节顺序的二进制地址。
+port|	port是端口的编号，每个服务器都会监听客户端连接的一个或多个端口号，一个端口号可以是 Fixnum 的端口号, 包含了服务器名和端口。
+
+**简单的客户端**
+
+```ruby
+require 'socket'      # Sockets 是标准库
+ 
+hostname = 'localhost'
+port = 2000
+ 
+s = TCPSocket.open(hostname, port)
+ 
+while line = s.gets   # 从 socket 中读取每行数据
+  puts line.chop      # 打印到终端
+end
+s.close               # 关闭 socket
+```
+
+**简单的服务端**
+
+```ruby
+require 'socket'               # 获取socket标准库
+ 
+server = TCPServer.open(2000)  # Socket 监听端口为 2000
+loop {                         # 永久运行服务
+  client = server.accept       # 等待客户端连接
+  client.puts(Time.now.ctime)  # 发送时间到客户端
+  client.puts "Closing the connection. Bye!"
+  client.close                 # 关闭客户端连接
+}
+```
+
+可以使用socket库来实现任何的 Internet 协议。以下代码展示了如何获取网页的内容：
+
+```ruby
+require 'socket'
+ 
+host = 'www.w3cschool.cc'     # web服务器
+port = 80                           # 默认 HTTP 端口
+path = "/index.htm"                 # 想要获取的文件地址
+ 
+# 这是个 HTTP 请求
+request = "GET #{path} HTTP/1.0\r\n\r\n"
+ 
+socket = TCPSocket.open(host,port)  # 连接服务器
+socket.print(request)               # 发送请求
+response = socket.read              # 读取完整的响应
+# Split response at first blank line into headers and body
+headers,body = response.split("\r\n\r\n", 2) 
+print body                          # 输出结果
+```
+
+**Web客户端**
+
+```ruby
+require 'net/http'                  # 我们需要的库
+host = 'www.w3cschool.cc'           #  web 服务器
+path = '/index.htm'                 # 我们想要的文件 
+ 
+http = Net::HTTP.new(host)          # 创建连接
+headers, body = http.get(path)      # 请求文件
+if headers.code == "200"            # 检测状态码
+  print body                        
+else                                
+  puts "#{headers.code} #{headers.message}" 
+end
+```
+
+**Ruby XML, XSLT 和 XPath**
+
+**DOM解析器**
+
+```ruby
+require 'rexml/document'
+include REXML
+ 
+xmlfile = File.new("movies.xml")
+xmldoc = Document.new(xmlfile)
+ 
+# 获取 root 元素
+root = xmldoc.root
+puts "Root element : " + root.attributes["shelf"]
+ 
+# 以下将输出电影标题
+xmldoc.elements.each("collection/movie"){ 
+   |e| puts "Movie Title : " + e.attributes["title"] 
+}
+ 
+# 以下将输出所有电影类型
+xmldoc.elements.each("collection/movie/type") {
+   |e| puts "Movie Type : " + e.text 
+}
+ 
+# 以下将输出所有电影描述
+xmldoc.elements.each("collection/movie/description") {
+   |e| puts "Movie Description : " + e.text 
+}
+```
+
+**SAX解析器**
+
+```ruby
+require 'rexml/document'
+require 'rexml/streamlistener'
+include REXML
+ 
+ 
+class MyListener
+  include REXML::StreamListener
+  def tag_start(*args)
+    puts "tag_start: #{args.map {|x| x.inspect}.join(', ')}"
+  end
+ 
+  def text(data)
+    return if data =~ /^\w*$/     # whitespace only
+    abbrev = data[0..40] + (data.length > 40 ? "..." : "")
+    puts "  text   :   #{abbrev.inspect}"
+  end
+end
+ 
+list = MyListener.new
+xmlfile = File.new("movies.xml")
+Document.parse_stream(xmlfile, list)
+```
+
+**Ruby XPath**
+
+```ruby
+require 'rexml/document'
+include REXML
+ 
+xmlfile = File.new("movies.xml")
+xmldoc = Document.new(xmlfile)
+ 
+# 第一个电影的信息
+movie = XPath.first(xmldoc, "//movie")
+p movie
+ 
+# 打印所有电影类型
+XPath.each(xmldoc, "//type") { |e| puts e.text }
+ 
+# 获取所有电影格式的类型，返回数组
+names = XPath.match(xmldoc, "//format").map {|x| x.text }
+p names
+```
+
+```ruby
+require "xslt"
+ 
+stylesheet = File.readlines("stylesheet.xsl").to_s
+xml_doc = File.readlines("document.xml").to_s
+arguments = { 'image_dir' => '/....' }
+ 
+sheet = XSLT::Stylesheet.new( stylesheet, arguments )
+ 
+# output to StdOut
+sheet.apply( xml_doc )
+ 
+# output to 'str'
+str = ""
+sheet.output = [ str ]
+sheet.apply( xml_doc )
+```
+
+**Ruby SOAP**
+
+简单对象访问协议(SOAP,全写为Simple Object Access Protocol)是交换数据的一种协议规范。
+
+SOAP 是一种简单的基于 XML 的协议，它使应用程序通过 HTTP 来交换信息。
+
+```ruby
+class MyServer < SOAP::RPC::StandaloneServer
+   # 处理方法
+   def add(a, b)
+      return a + b
+   end
+   def div(a, b) 
+      return a / b 
+   end
+   def initialize(*args)
+      add_method(receiver, methodName, *paramArg)
+   end
+end
+```
+
+参数|描述
+-|-
+receiver	|包含方法名的方法的对象。 如果你在同一个类中定义服务方法，该参数为 self。
+methodName|	调用 RPC 请求的方法名。
+paramArg|	参数名和参数模式
+
+**Ruby多线程**
+
+每个正在系统上运行的程序都是一个进程。每个进程包含一到多个线程。
+
+线程是程序中一个单一的顺序控制流程，在单个程序中同时运行多个线程完成不同的工作,称为多线程。
+
+Ruby 中可以通过 Thread 类来创建多线程，Ruby的线程是一个轻量级的，可以以高效的方式来实现并行的代码。
+
+```ruby
+def func1
+   i=0
+   while i<=2
+      puts "func1 at: #{Time.now}"
+      sleep(2)
+      i=i+1
+   end
+end
+ 
+def func2
+   j=0
+   while j<=2
+      puts "func2 at: #{Time.now}"
+      sleep(1)
+      j=j+1
+   end
+end
+ 
+puts "Started At #{Time.now}"
+t1 = Thread.new{func1()}
+t2 = Thread.new{func2()}
+t1.join
+t2.join
+puts "End at #{Time.now}"
+```
+
+**线程生命周期**
+
+* 线程的创建可以使用Thread.new,同样可以以同样的语法使用Thread.start 或者Thread.fork这三个方法来创建线程。
+* 创建线程后无需启动，线程会自动执行。
+* Thread 类定义了一些方法来操控线程。线程执行Thread.new中的代码块。
+* 线程代码块中最后一个语句是线程的值，可以通过线程的方法来调用，如果线程执行完毕，则返回线程值，否则不返回值直到线程执行完毕。
+* Thread.current 方法返回表示当前线程的对象。 Thread.main 方法返回主线程。
+* 通过 Thread.Join 方法来执行线程，这个方法会挂起主线程，直到当前线程执行完毕。
+
+**线程同步控制**
+
+```ruby
+require "thread"
+puts "Synchronize Thread"
+ 
+@num=200
+@mutex=Mutex.new
+ 
+def buyTicket(num)
+     @mutex.lock
+          if @num>=num
+               @num=@num-num
+               puts "you have successfully bought #{num} tickets"
+          else
+               puts "sorry,no enough tickets"
+          end
+     @mutex.unlock
+end
+ 
+ticket1=Thread.new 10 do
+     10.times do |value|
+     ticketNum=15
+     buyTicket(ticketNum)
+     sleep 0.01
+     end
+end
+ 
+ticket2=Thread.new 10 do
+     10.times do |value|
+     ticketNum=20
+     buyTicket(ticketNum)
+     sleep 0.01
+     end
+end
+ 
+sleep 1
+ticket1.join
+ticket2.join
+```
+
+**监管数据交接的Queue类实现线程同步**
+
+Queue类就是表示一个支持线程的队列，能够同步对队列末尾进行访问。不同的线程可以使用统一个对类，但是不用担心这个队列中的数据是否能够同步，另外使用SizedQueue类能够限制队列的长度
+
+SizedQueue类能够非常便捷的帮助我们开发线程同步的应用程序，应为只要加入到这个队列中，就不用关心线程的同步问题。
+
+经典的生产者消费者问题：
+
+```ruby
+require "thread"
+puts "SizedQuee Test"
+ 
+queue = Queue.new
+ 
+producer = Thread.new do
+     10.times do |i|
+          sleep rand(i) # 让线程睡眠一段时间
+          queue << i
+          puts "#{i} produced"
+     end
+end
+ 
+consumer = Thread.new do
+     10.times do |i|
+          value = queue.pop
+          sleep rand(i/2)
+          puts "consumed #{value}"
+     end
+end
+ 
+consumer.join
+```
+
+**线程变量**
+
+线程可以有其私有变量，线程的私有变量在线程创建的时候写入线程。可以被线程范围内使用，但是不能被线程外部进行共享。
+
+但是有时候，线程的局部变量需要别别的线程或者主线程访问怎么办？ruby当中提供了允许通过名字来创建线程变量，类似的把线程看做hash式的散列表。通过`[]=`写入并通过`[]`读出数据。我们来看一下下面的代码：
+
+```ruby
+count = 0
+arr = []
+ 
+10.times do |i|
+   arr[i] = Thread.new {
+      sleep(rand(0)/10.0)
+      Thread.current["mycount"] = count
+      count += 1
+   }
+end
+ 
+arr.each {|t| t.join; print t["mycount"], ", " }
+puts "count = #{count}"
+```
+
+**线程互斥**
+
+```ruby
+require 'thread'
+mutex = Mutex.new
+ 
+count1 = count2 = 0
+difference = 0
+counter = Thread.new do
+   loop do
+      mutex.synchronize do
+         count1 += 1
+         count2 += 1
+      end
+    end
+end
+spy = Thread.new do
+   loop do
+       mutex.synchronize do
+          difference += (count1 - count2).abs
+       end
+   end
+end
+sleep 1
+mutex.lock
+puts "count1 :  #{count1}"
+puts "count2 :  #{count2}"
+puts "difference : #{difference}"
+```
+
+**线程死锁**
+
+```ruby
+require 'thread'
+mutex = Mutex.new
+ 
+cv = ConditionVariable.new
+a = Thread.new {
+   mutex.synchronize {
+      puts "A: I have critical section, but will wait for cv"
+      cv.wait(mutex)
+      puts "A: I have critical section again! I rule!"
+   }
+}
+ 
+puts "(Later, back at the ranch...)"
+ 
+b = Thread.new {
+   mutex.synchronize {
+      puts "B: Now I am critical, but am done with cv"
+      cv.signal
+      puts "B: I am still critical, finishing up"
+   }
+}
+a.join
+b.join
+```
+
+**线程类方法**
+
+序号|方法描述
+-|-
+1|	`Thread.abort_on_exception`若其值为真的话，一旦某线程因异常而终止时，整个解释器就会被中断。它的默认值是假，也就是说，在通常情况下，若某线程发生异常且该异常未被Thread#join等检测到时，该线程会被无警告地终止。
+2|	`Thread.abort_on_exception=`如果设置为 true, 一旦某线程因异常而终止时，整个解释器就会被中断。返回新的状态
+3|	`Thread.critical` 返回布尔值。
+4|	`Thread.critical=`当其值为true时，将不会进行线程切换。若当前线程挂起(stop)或有信号(signal)干预时，其值将自动变为false。
+5|	`Thread.current`返回当前运行中的线程(当前线程)。
+6|	`Thread.exit`终止当前线程的运行。返回当前线程。若当前线程是唯一的一个线程时，将使用exit(0)来终止它的运行。
+7|	`Thread.fork { block }`与 Thread.new 一样生成线程。
+8|	`Thread.kill( aThread )`终止线程的运行.
+9|	`Thread.list`返回处于运行状态或挂起状态的活线程的数组。
+10|	`Thread.main`返回主线程。
+11|	`Thread.new( [ arg ]* ) {| args | block }`生成线程,并开始执行。数会被原封不动地传递给块. 这就可以在启动线程的同时,将值传递给该线程所固有的局部变量。
+12|	`Thread.pass`将运行权交给其他线程. 它不会改变运行中的线程的状态,而是将控制权交给其他可运行的线程(显式的线程调度)。
+13|	`Thread.start( [ args ]* ) {| args | block }`生成线程,并开始执行。数会被原封不动地传递给块. 这就可以在启动线程的同时,将值传递给该线程所固有的局部变量。
+14|	`Thread.stop`将当前线程挂起,直到其他线程使用run方法再次唤醒该线程。
+
+**Ruby JSON**
+
+```ruby
+require 'rubygems'
+require 'json'
+require 'pp'
+ 
+json = File.read('input.json')
+obj = JSON.parse(json)
+ 
+pp obj
+```
+
+**Ruby RubyGems**
+
+RubyGems 是 Ruby 的一个包管理器，它提供一个分发 Ruby 程序和库的标准格式，还提供一个管理程序包安装的工具。
+
+RubyGems 旨在方便地管理 gem 安装的工具，以及用于分发 gem 的服务器。这类似于 Ubuntu 下的apt-get, Centos 的 yum，Python 的 pip。
+
+```ruby
+gem install gem
+gem uninstall mygem
+gem list --local
+gem list --remote
+gem rdoc --all
+gem fetch mygem
+gem search STRING --remote
+```
+
+**Ruby Gem China Source**
+
+> https://gems.ruby-china.com/

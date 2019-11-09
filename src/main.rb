@@ -286,3 +286,86 @@ puts "电话号码 : #{phone}"
 phone = phone.gsub!(/\D/, "")    
 puts "电话号码 : #{phone}"
 
+def func1
+    i=0
+    while i<=2
+       puts "func1 at: #{Time.now}"
+       sleep(2)
+       i=i+1
+    end
+end
+  
+def func2
+    j=0
+    while j<=2
+       puts "func2 at: #{Time.now}"
+       sleep(1)
+       j=j+1
+    end
+end
+  
+puts "Started At #{Time.now}"
+t1 = Thread.new{func1()}
+t2 = Thread.new{func2()}
+t1.join
+t2.join
+puts "End at #{Time.now}"
+
+require "thread"
+puts "Synchronize Thread"
+
+@num=200
+@mutex=Mutex.new
+ 
+def buyTicket(num)
+     @mutex.lock
+          if @num>=num
+               @num=@num-num
+               puts "you have successfully bought #{num} tickets"
+          else
+               puts "sorry,no enough tickets"
+          end
+     @mutex.unlock
+end
+ 
+ticket1=Thread.new 10 do
+     10.times do |value|
+     ticketNum=15
+     buyTicket(ticketNum)
+     sleep 0.01
+     end
+end
+ 
+ticket2=Thread.new 10 do
+     10.times do |value|
+     ticketNum=20
+     buyTicket(ticketNum)
+     sleep 0.01
+     end
+end
+ 
+sleep 1
+ticket1.join
+ticket2.join
+
+puts "SizedQuee Test"
+ 
+queue = Queue.new
+ 
+producer = Thread.new do
+     10.times do |i|
+          sleep rand(i) # 让线程睡眠一段时间
+          queue << i
+          puts "#{i} produced"
+     end
+end
+ 
+consumer = Thread.new do
+     10.times do |i|
+          value = queue.pop
+          sleep rand(i/2)
+          puts "consumed #{value}"
+     end
+end
+ 
+consumer.join
